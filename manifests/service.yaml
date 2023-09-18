@@ -1,13 +1,13 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: davidgamero-test
-  namespace: namespace-workflow-1695050890522
+  name: davidgamero-test2
+  namespace: namespace-workflow-1695051455078
 spec:
   type: LoadBalancer
   selector:
-    app: davidgamero-test
+    app: davidgamero-test2
   ports:
     - protocol: TCP
-      port: 80
-      targetPort: 80
+      port: 1323
+      targetPort: 1323
