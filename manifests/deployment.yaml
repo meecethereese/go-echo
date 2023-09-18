@@ -4,7 +4,7 @@ metadata:
   name: davidgamero-test
   labels:
     app: davidgamero-test
-  namespace: namespace-workflow-1678733499614
+  namespace: namespace-workflow-1695050890522
 spec:
   replicas: 1
   selector:
@@ -17,6 +17,6 @@ spec:
     spec:
       containers:
         - name: davidgamero-test
-          image: acrworkflow1678733499614.azurecr.io/image-workflow-1678733499614:latest
+          image: acrworkflow1695050890522.azurecr.io/image-workflow-1695050890522:latest
           ports:
-            - containerPort: 1323
+            - containerPort: 80
