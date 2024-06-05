@@ -36,7 +36,7 @@ on:
 
 env:
   AZURE_CONTAINER_REGISTRY: davidgamerotest
-  CONTAINER_NAME: goecho
+  CONTAINER_NAME: go-echo
   RESOURCE_GROUP: davidgamerotest
   CLUSTER_NAME: davidgamerotest
   DEPLOYMENT_MANIFEST_PATH: ./manifests
