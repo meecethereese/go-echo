@@ -35,10 +35,10 @@ on:
   workflow_dispatch:
 
 env:
-  AZURE_CONTAINER_REGISTRY: davidgamerotest
+  AZURE_CONTAINER_REGISTRY: davidgamerotest2
   CONTAINER_NAME: go-echo
-  RESOURCE_GROUP: davidgamerotest
-  CLUSTER_NAME: davidgamerotest
+  RESOURCE_GROUP: davidgamerotest2
+  CLUSTER_NAME: davidgamerotest2
   DEPLOYMENT_MANIFEST_PATH: ./manifests
   BUILD_CONTEXT_PATH: .
 
