@@ -20,7 +20,7 @@ spec:
         app: go-echo
     spec:
       containers:
-      - image: davidgamerotest.azurecr.io/goecho
+      - image: meeceacr.azurecr.io/meeceimage
         imagePullPolicy: Always
         name: go-echo
         ports:

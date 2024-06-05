@@ -35,10 +35,10 @@ on:
   workflow_dispatch:
 
 env:
-  AZURE_CONTAINER_REGISTRY: davidgamerotest
-  CONTAINER_NAME: goecho
-  RESOURCE_GROUP: davidgamerotest
-  CLUSTER_NAME: davidgamerotest
+  AZURE_CONTAINER_REGISTRY: meeceacr
+  CONTAINER_NAME: meeceimage
+  RESOURCE_GROUP: meecerg
+  CLUSTER_NAME: meececluster
   DEPLOYMENT_MANIFEST_PATH: ./manifests
   BUILD_CONTEXT_PATH: .
 
