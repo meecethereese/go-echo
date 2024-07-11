@@ -73,10 +73,17 @@ jobs:
       contents: read
       id-token: write
     runs-on: ubuntu-latest
-    needs: [buildImage]
     steps:
       # Checks out the repository this file is in
       - uses: actions/checkout@v3
+      
+      - id: artifact-sub
+        uses: azure/k8s-artifact-substitute@v1
+        with:
+          manifests: ./manifests
+          images: davidgamerotest2.azurecr.io/go-echo:hello-oliver
+      - run: |
+          cat ${{ steps.artifact-sub.outputs.directory }}/deployment.yaml
 
       # Logs in with your Azure credentials
       - name: Azure login
