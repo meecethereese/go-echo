@@ -44,7 +44,7 @@ env:
   AZURE_CONTAINER_REGISTRY: meeceacr
   CONTAINER_NAME: sample/hello-world
   CLUSTER_RESOURCE_GROUP: meece-testing
-  CLUSTER_NAME: meece-private-cluster
+  CLUSTER_NAME: meece-public-cluster
   DOCKER_FILE: ./Dockerfile
   BUILD_CONTEXT_PATH: .
   CHART_PATH: ./charts
