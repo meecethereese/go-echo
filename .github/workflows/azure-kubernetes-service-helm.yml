@@ -42,7 +42,7 @@ on:
 env:
   ACR_RESOURCE_GROUP: meece-testing
   AZURE_CONTAINER_REGISTRY: meeceacr
-  CONTAINER_NAME: sample/hello-world
+  CONTAINER_NAME: go-echo-1
   CLUSTER_RESOURCE_GROUP: meece-testing
   CLUSTER_NAME: meece-private-cluster
   DOCKER_FILE: ./Dockerfile
@@ -124,7 +124,7 @@ jobs:
         id: isPrivate
         run: |
           result=$(az aks show --resource-group ${{ env.CLUSTER_RESOURCE_GROUP }} --name ${{ env.CLUSTER_NAME }} --query "apiServerAccessProfile.enablePrivateCluster")
-          echo "::set-output name=isPrivateCluster::$result"
+          echo "PRIVATE_CLUSTER=$result" >> "$GITHUB_OUTPUT"
 
       # Deploys application based on manifest files from previous step
       - name: Deploy application
@@ -135,4 +135,4 @@ jobs:
           images: |
             ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_NAME }}:${{ github.sha }}
           namespace: ${{ env.NAMESPACE }}
-          private-cluster: ${{ steps.isPrivate.outputs.isPrivateCluster }}
+          private-cluster: ${{ steps.isPrivate.outputs.PRIVATE_CLUSTER }}
