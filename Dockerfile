@@ -1,6 +1,6 @@
-FROM golang:1.22 AS builder
-ENV PORT 1323
-EXPOSE 1323
+FROM golang:1.18 AS builder
+ENV PORT 80
+EXPOSE 80
 
 WORKDIR /build
 COPY go.mod go.sum ./
