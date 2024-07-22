@@ -1,13 +1,5 @@
 # This workflow will build and push an application to a Azure Kubernetes Service (AKS) cluster when you push your code
 #
-# This workflow assumes you have already created the target AKS cluster and have created an Azure Container Registry (ACR)
-# The ACR should be attached to the AKS cluster
-# For instructions see:
-#   - https://docs.microsoft.com/en-us/azure/aks/kubernetes-walkthrough-portal
-#   - https://docs.microsoft.com/en-us/azure/container-registry/container-registry-get-started-portal
-#   - https://learn.microsoft.com/en-us/azure/aks/cluster-container-registry-integration?tabs=azure-cli#configure-acr-integration-for-existing-aks-clusters
-#   - https://github.com/Azure/aks-create-action
-#
 # To configure this workflow:
 #
 # 1. Set the following secrets in your repository (instructions for getting these
@@ -18,10 +10,9 @@
 #
 # 2. Set the following environment variables (or replace the values below):
 #    - AZURE_CONTAINER_REGISTRY (name of your container registry / ACR)
-#    - CONTAINER_NAME (name of the container image you would like to push up to your ACR)
+#    - ACR_REPOSITORY_NAME (name of the container image you would like to push up to your ACR)
 #    - RESOURCE_GROUP (where your cluster is deployed)
 #    - CLUSTER_NAME (name of your AKS cluster)
-#    - IMAGE_PULL_SECRET_NAME (name of the ImagePullSecret that will be created to pull your ACR image)
 #
 # 3. Choose the appropriate render engine for the bake step https://github.com/Azure/k8s-bake. The config below assumes Helm.
 #    Set your helmChart, overrideFiles, overrides, and helm-version to suit your configuration.
@@ -32,7 +23,7 @@
 # For more samples to get started with GitHub Action workflows to deploy to Azure, refer to https://github.com/Azure/actions-workflow-samples
 # For more options with the actions used below please refer to https://github.com/Azure/login
 
-name: Build and deploy an app to AKS with Helm
+name: Go Echo Test #1
 
 on:
   push:
@@ -40,17 +31,18 @@ on:
   workflow_dispatch:
 
 env:
-  ACR_RESOURCE_GROUP: meece-testing
-  AZURE_CONTAINER_REGISTRY: meeceacr
-  CONTAINER_NAME: go-echo
-  CLUSTER_RESOURCE_GROUP: meece-testing
-  CLUSTER_NAME: meece-private-cluster
-  DOCKER_FILE: ./Dockerfile
+  ACR_RESOURCE_GROUP: Meece-Go-Echo
+  AZURE_CONTAINER_REGISTRY: goechoacr
+  ACR_REPOSITORY_NAME: go-echo-1
+  CLUSTER_RESOURCE_GROUP: Meece-Go-Echo
+  CLUSTER_NAME: go-echo-public
+  DOCKER_FILE_PATH: ./Dockerfile
   BUILD_CONTEXT_PATH: .
   CHART_PATH: ./charts
   CHART_OVERRIDE_PATH: ./charts/production.yaml
   CHART_OVERRIDES: replicas:2
   NAMESPACE: default
+  PRIVATE_CLUSTER: false
   
 jobs:
   buildImage:
@@ -73,7 +65,7 @@ jobs:
       # Builds and pushes an image up to your Azure Container Registry
       - name: Build and push image to ACR
         run: |
-          az acr build --image ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_NAME }}:${{ github.sha }} --registry ${{ env.AZURE_CONTAINER_REGISTRY }} -g ${{ env.ACR_RESOURCE_GROUP }} -f ${{ env.DOCKER_FILE }} ${{ env.BUILD_CONTEXT_PATH }}
+          az acr build --image ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.ACR_REPOSITORY_NAME }}:${{ github.sha }} --registry ${{ env.AZURE_CONTAINER_REGISTRY }} -g ${{ env.ACR_RESOURCE_GROUP }} -f ${{ env.DOCKER_FILE_PATH }} ${{ env.BUILD_CONTEXT_PATH }}
   deploy:
     permissions:
       actions: read
@@ -119,13 +111,6 @@ jobs:
           helm-version: "latest"
         id: bake
 
-      # Checks if the AKS cluster is private
-      - name: Is private cluster
-        id: isPrivate
-        run: |
-          result=$(az aks show --resource-group ${{ env.CLUSTER_RESOURCE_GROUP }} --name ${{ env.CLUSTER_NAME }} --query "apiServerAccessProfile.enablePrivateCluster")
-          echo "PRIVATE_CLUSTER=$result" >> "$GITHUB_OUTPUT"
-
       # Deploys application based on manifest files from previous step
       - name: Deploy application
         uses: Azure/k8s-deploy@v4
@@ -133,6 +118,6 @@ jobs:
           action: deploy
           manifests: ${{ steps.bake.outputs.manifestsBundle }}
           images: |
-            ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_NAME }}:${{ github.sha }}
+            ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.ACR_REPOSITORY_NAME }}:${{ github.sha }}
           namespace: ${{ env.NAMESPACE }}
-          private-cluster: ${{ steps.isPrivate.outputs.PRIVATE_CLUSTER }}
+          private-cluster: ${{ env.PRIVATE_CLUSTER }}
