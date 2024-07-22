@@ -1,5 +1,5 @@
 image:
-    repository: goechoacr.azurecr.io/go-echo-2
+    repository: goechoacr.azurecr.io/go-echo-4
     pullPolicy: Always
     tag: latest
 service:

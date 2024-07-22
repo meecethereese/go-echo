@@ -23,7 +23,7 @@
 # For more samples to get started with GitHub Action workflows to deploy to Azure, refer to https://github.com/Azure/actions-workflow-samples
 # For more options with the actions used below please refer to https://github.com/Azure/login
 
-name: go echo test 2
+name: Build and deploy an app to AKS with Helm
 
 on:
   push:
@@ -33,7 +33,7 @@ on:
 env:
   ACR_RESOURCE_GROUP: Meece-Go-Echo
   AZURE_CONTAINER_REGISTRY: goechoacr
-  ACR_REPOSITORY_NAME: go-echo-2
+  ACR_REPOSITORY_NAME: go-echo-4
   CLUSTER_RESOURCE_GROUP: Meece-Go-Echo
   CLUSTER_NAME: go-echo-public
   DOCKER_FILE_PATH: ./Dockerfile
