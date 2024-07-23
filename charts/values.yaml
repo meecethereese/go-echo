@@ -9,7 +9,7 @@ namespace: go-echo
 containerPort: 3000
 
 image:
-  repository: goechoacr.azurecr.io/go-echo-helm-private
+  repository: go-echo
   tag: latest
   pullPolicy: Always
 
