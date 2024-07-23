@@ -1,8 +1,0 @@
-image:
-    repository: goechoacr.azurecr.io/go-echo-private
-    pullPolicy: Always
-    tag: latest
-service:
-    annotations: {}
-    type: LoadBalancer
-    port: "80"
