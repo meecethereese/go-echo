@@ -1,0 +1,7 @@
+namePrefix: production-
+namespace: go-echo
+resources:
+  - ../../base
+patchesStrategicMerge:
+  - deployment.yaml
+  - service.yaml

@@ -1,0 +1,17 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: go-echo
+  labels:
+    app: go-echo
+    kubernetes.azure.com/generator: draft
+  namespace: go-echo
+spec:
+  selector:
+    matchLabels:
+      app: go-echo
+  template:
+    spec:
+      containers:
+        - name: go-echo
+          image: go-echo:latest

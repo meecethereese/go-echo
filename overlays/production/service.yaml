@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: go-echo
+  namespace: go-echo
+  labels:
+    kubernetes.azure.com/generator: draft
+spec:
+  type: LoadBalancer
