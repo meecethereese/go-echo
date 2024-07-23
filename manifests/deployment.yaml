@@ -1,24 +1,29 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: go-echo
+  creationTimestamp: null
   labels:
     app: go-echo
     kubernetes.azure.com/generator: draft
+  name: go-echo
   namespace: go-echo
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: go-echo
+  strategy: {}
   template:
     metadata:
+      creationTimestamp: null
       labels:
         app: go-echo
     spec:
       containers:
-        - name: go-echo
-          image: go-echo:latest
-          imagePullPolicy: Always
-          ports:
-            - containerPort: 3000
+      - image: goechoacr.azurecr.io/go-echo-manifests-private
+        imagePullPolicy: Always
+        name: go-echo
+        ports:
+        - containerPort: 3000
+        resources: {}
+status: {}
