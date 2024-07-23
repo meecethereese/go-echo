@@ -1,9 +1,10 @@
 # This workflow will build and push an application to a Azure Kubernetes Service (AKS) cluster when you push your code
 #
+#
 # To configure this workflow:
 #
 # 1. Set the following secrets in your repository (instructions for getting these
-#    https://docs.microsoft.com/en-us/azure/developer/github/connect-from-azure?tabs=azure-cli%2Clinux)):
+#    https://docs.microsoft.com/en-us/azure/developer/github/connect-from-azure?tabs=azure-cli%2Clinux):
 #    - AZURE_CLIENT_ID
 #    - AZURE_TENANT_ID
 #    - AZURE_SUBSCRIPTION_ID
@@ -14,16 +15,15 @@
 #    - RESOURCE_GROUP (where your cluster is deployed)
 #    - CLUSTER_NAME (name of your AKS cluster)
 #
-# 3. Choose the appropriate render engine for the bake step https://github.com/Azure/k8s-bake. The config below assumes Helm.
-#    Set your helmChart, overrideFiles, overrides, and helm-version to suit your configuration.
-#    - CHART_PATH (path to your helm chart)
-#    - CHART_OVERRIDE_PATH (path to your helm chart with override values)
+# 3. Choose the appropriate render engine for the bake step https://github.com/Azure/k8s-bake. The config below assumes Kustomize.
+#    Set your kustomizationPath and kubectl-version to suit your configuration.
+#    - KUSTOMIZE_PATH (the path where your Kustomize manifests are located)
 #
 # For more information on GitHub Actions for Azure, refer to https://github.com/Azure/Actions
 # For more samples to get started with GitHub Action workflows to deploy to Azure, refer to https://github.com/Azure/actions-workflow-samples
 # For more options with the actions used below please refer to https://github.com/Azure/login
 
-name: go echo helm private
+name: go echo kustomize private
 
 on:
   push:
@@ -33,16 +33,14 @@ on:
 env:
   ACR_RESOURCE_GROUP: Meece-Go-Echo
   AZURE_CONTAINER_REGISTRY: goechoacr
-  ACR_REPOSITORY_NAME: go-echo-helm-private
+  ACR_REPOSITORY_NAME: go-echo-kustomize-private
   CLUSTER_RESOURCE_GROUP: Meece-Go-Echo
   CLUSTER_NAME: go-echo-private
+  KUSTOMIZE_PATH: ./overlays/production
   DOCKER_FILE_PATH: ./Dockerfile
   BUILD_CONTEXT_PATH: .
-  CHART_PATH: ./charts
-  CHART_OVERRIDE_PATH: ./charts/production.yaml
-  CHART_OVERRIDES: replicas:2
   NAMESPACE: go-echo
-  
+
 jobs:
   buildImage:
     permissions:
@@ -99,17 +97,15 @@ jobs:
           admin: 'false'
           use-kubelogin: 'true'
 
-      # Runs Helm to create manifest files
+      # Runs Kustomize to create manifest files
       - name: Bake deployment
         uses: azure/k8s-bake@v2
         with:
-          renderEngine: "helm"
-          helmChart: ${{ env.CHART_PATH }}
-          overrideFiles: ${{ env.CHART_OVERRIDE_PATH }}
-          overrides: ${{ env.CHART_OVERRIDES }}
-          helm-version: "latest"
+          renderEngine: "kustomize"
+          kustomizationPath: ${{ env.KUSTOMIZE_PATH }}
+          kubectl-version: latest
         id: bake
-
+      
       # Checks if the AKS cluster is private
       - name: Is private cluster
         id: isPrivate

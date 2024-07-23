@@ -1,17 +1,23 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: go-echo
+  creationTimestamp: null
   labels:
     app: go-echo
     kubernetes.azure.com/generator: draft
+  name: go-echo
   namespace: go-echo
 spec:
   selector:
     matchLabels:
       app: go-echo
+  strategy: {}
   template:
+    metadata:
+      creationTimestamp: null
     spec:
       containers:
-        - name: go-echo
-          image: go-echo:latest
+      - image: goechoacr.azurecr.io/go-echo-kustomize-private
+        name: go-echo
+        resources: {}
+status: {}
