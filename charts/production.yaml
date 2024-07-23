@@ -1,5 +1,5 @@
 image:
-    repository: goechoacr.azurecr.io/go-echo-helm-private
+    repository: goechoacr.azurecr.io/go-echo-helm-public
     pullPolicy: Always
     tag: latest
 service:
