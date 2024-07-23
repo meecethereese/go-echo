@@ -20,10 +20,11 @@ spec:
         app: go-echo
     spec:
       containers:
-      - image: goechoacr.azurecr.io/go-echo-manifests-private
+      - image: goechoacr.azurecr.io/go-echo-manifests-public
         imagePullPolicy: Always
         name: go-echo
         ports:
         - containerPort: 3000
         resources: {}
 status: {}
+
