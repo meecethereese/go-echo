@@ -39,7 +39,7 @@ env:
   KUSTOMIZE_PATH: ./overlays/production
   DOCKER_FILE_PATH: ./Dockerfile
   BUILD_CONTEXT_PATH: .
-  NAMESPACE: go-echo
+  NAMESPACE: default
 
 jobs:
   buildImage:

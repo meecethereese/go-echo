@@ -17,7 +17,7 @@ spec:
       creationTimestamp: null
     spec:
       containers:
-      - image: goechoacr.azurecr.io/go-echo-kustomize
+      - image: goechoacr.azurecr.io/go-echo-kustomize:latest
         name: go-echo
         resources: {}
 status: {}
