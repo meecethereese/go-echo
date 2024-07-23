@@ -23,7 +23,7 @@
 # For more samples to get started with GitHub Action workflows to deploy to Azure, refer to https://github.com/Azure/actions-workflow-samples
 # For more options with the actions used below please refer to https://github.com/Azure/login
 
-name: go echo helm
+name: go echo helm private
 
 on:
   push:
@@ -33,9 +33,9 @@ on:
 env:
   ACR_RESOURCE_GROUP: Meece-Go-Echo
   AZURE_CONTAINER_REGISTRY: goechoacr
-  ACR_REPOSITORY_NAME: go-echo-helm
+  ACR_REPOSITORY_NAME: go-echo-helm-private
   CLUSTER_RESOURCE_GROUP: Meece-Go-Echo
-  CLUSTER_NAME: go-echo-public
+  CLUSTER_NAME: go-echo-private
   DOCKER_FILE_PATH: ./Dockerfile
   BUILD_CONTEXT_PATH: .
   CHART_PATH: ./charts
