@@ -6,10 +6,10 @@ replicaCount: 1
 
 namespace: go-echo
 
-containerPort: 80
+containerPort: 3000
 
 image:
-  repository: goechoacr.azurecr.io/go-echo-helm
+  repository: go-echo
   tag: latest
   pullPolicy: Always
 
@@ -34,7 +34,7 @@ securityContext: {}
 service:
   annotations: {}
   type: LoadBalancer
-  port: 80
+  port: 3000
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
