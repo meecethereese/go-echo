@@ -2,23 +2,28 @@
 #
 # To configure this workflow:
 #
-# 1. Set the following secrets in your repository (instructions for getting these can be found at https://docs.microsoft.com/en-us/azure/developer/github/connect-from-azure?tabs=azure-cli%2Clinux):
+# 1. Set the following secrets in your repository (instructions for getting these
+#    https://docs.microsoft.com/en-us/azure/developer/github/connect-from-azure?tabs=azure-cli%2Clinux)):
 #    - AZURE_CLIENT_ID
 #    - AZURE_TENANT_ID
 #    - AZURE_SUBSCRIPTION_ID
 #
 # 2. Set the following environment variables (or replace the values below):
 #    - AZURE_CONTAINER_REGISTRY (name of your container registry / ACR)
+#    - ACR_REPOSITORY_NAME (name of the container image you would like to push up to your ACR)
 #    - RESOURCE_GROUP (where your cluster is deployed)
 #    - CLUSTER_NAME (name of your AKS cluster)
-#    - ACR_REPOSITORY_NAME (name of the container image you would like to push up to your ACR)
-#    - DEPLOYMENT_MANIFEST_PATH (path to the manifest yaml for your deployment)
+#
+# 3. Choose the appropriate render engine for the bake step https://github.com/Azure/k8s-bake. The config below assumes Helm.
+#    Set your helmChart, overrideFiles, overrides, and helm-version to suit your configuration.
+#    - CHART_PATH (path to your helm chart)
+#    - CHART_OVERRIDE_PATH (path to your helm chart with override values)
 #
 # For more information on GitHub Actions for Azure, refer to https://github.com/Azure/Actions
 # For more samples to get started with GitHub Action workflows to deploy to Azure, refer to https://github.com/Azure/actions-workflow-samples
 # For more options with the actions used below please refer to https://github.com/Azure/login
 
-name: go echo manifests public
+name: go echo new helm private
 
 on:
   push:
@@ -28,14 +33,16 @@ on:
 env:
   ACR_RESOURCE_GROUP: Meece-Go-Echo
   AZURE_CONTAINER_REGISTRY: goechoacr
-  ACR_REPOSITORY_NAME: go-echo-manifests-public
+  ACR_REPOSITORY_NAME: go-echo-new-helm-private
   CLUSTER_RESOURCE_GROUP: Meece-Go-Echo
-  CLUSTER_NAME: go-echo-public
-  DEPLOYMENT_MANIFEST_PATH: ./manifests
+  CLUSTER_NAME: go-echo-private
   DOCKER_FILE_PATH: ./Dockerfile
   BUILD_CONTEXT_PATH: .
+  CHART_PATH: ./charts
+  CHART_OVERRIDE_PATH: ./charts/production.yaml
+  CHART_OVERRIDES: replicas:2
   NAMESPACE: go-echo
-
+  
 jobs:
   buildImage:
     permissions:
@@ -91,24 +98,7 @@ jobs:
           cluster-name: ${{ env.CLUSTER_NAME }}
           admin: 'false'
           use-kubelogin: 'true'
-      
-      # Checks if the AKS cluster is private
-      - name: Is private cluster
-        id: isPrivate
-        run: |
-          result=$(az aks show --resource-group ${{ env.CLUSTER_RESOURCE_GROUP }} --name ${{ env.CLUSTER_NAME }} --query "apiServerAccessProfile.enablePrivateCluster")
-          echo "PRIVATE_CLUSTER=$result" >> "$GITHUB_OUTPUT"
 
-      # Deploys application based on given manifest  file
-      - name: Deploys application
-        uses: Azure/k8s-deploy@v4
-        with:
-          action: deploy
-          manifests: ${{ env.DEPLOYMENT_MANIFEST_PATH }}
-          images: |
-            ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.ACR_REPOSITORY_NAME }}:${{ github.sha }}
-          resource-group: ${{ env.CLUSTER_RESOURCE_GROUP }}
-          name: ${{ env.CLUSTER_NAME }}
-          private-cluster: ${{ steps.isPrivate.outputs.PRIVATE_CLUSTER }}
-          namespace: ${{ env.NAMESPACE }}
-          
+      # Deploys application based on manifest files from previous step
+      - name: Deploy application
+        run:  az aks command invoke --resource-group ${{ env.CLUSTER_RESOURCE_GROUP }} --name ${{ env.CLUSTER_NAME }} --command "helm upgrade --wait -i -f ${{ env.CHART_OVERRIDE_PATH }} --set ${{ env.CHART_OVERRIDES }} automated-deployment ${{ env.CHART_PATH }}"
