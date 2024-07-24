@@ -33,9 +33,9 @@ on:
 env:
   ACR_RESOURCE_GROUP: Meece-Go-Echo
   AZURE_CONTAINER_REGISTRY: goechoacr
-  ACR_REPOSITORY_NAME: go-echo-helm-private-test
+  ACR_REPOSITORY_NAME: go-echo-helm-public-test
   CLUSTER_RESOURCE_GROUP: Meece-Go-Echo
-  CLUSTER_NAME: go-echo-private
+  CLUSTER_NAME: go-echo-public
   DOCKER_FILE_PATH: ./Dockerfile
   BUILD_CONTEXT_PATH: .
   CHART_PATH: ./charts
@@ -112,5 +112,5 @@ jobs:
         run: az aks command invoke --resource-group ${{ env.CLUSTER_RESOURCE_GROUP }} --name ${{ env.CLUSTER_NAME }} --command "helm upgrade --wait -i -f ${{ env.CHART_OVERRIDE_PATH }} --set ${{ env.CHART_OVERRIDES }} automated-deployment ${{ env.CHART_PATH }}"
       
       - name: Deploy application on public cluster
-        if: ${{ steps.isPrivate.outputs.PRIVATE_CLUSTER == 'false'}}
+        if: ${{ steps.isPrivate.outputs.PRIVATE_CLUSTER != 'true' }}
         run: helm upgrade --wait -i -f ${{ env.CHART_OVERRIDE_PATH }} --set ${{ env.CHART_OVERRIDES }} automated-deployment ${{ env.CHART_PATH }}
