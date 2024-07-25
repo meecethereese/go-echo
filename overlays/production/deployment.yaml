@@ -17,7 +17,7 @@ spec:
       creationTimestamp: null
     spec:
       containers:
-      - image: adfea**%.azurecr.io/container
+      - image: goechoacr.azurecr.io/goecho
         name: go-echo
         resources: {}
 status: {}
