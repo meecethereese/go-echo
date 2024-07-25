@@ -17,8 +17,8 @@ spec:
       creationTimestamp: null
     spec:
       containers:
-      - image: goechoacr.azurecr.io/go-echo-kustomize-public
+      - image: adfea**%.azurecr.io/container
         name: go-echo
         resources: {}
 status: {}
-
+{}
